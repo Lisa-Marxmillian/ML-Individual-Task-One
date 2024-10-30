@@ -1,21 +1,20 @@
-# Set a smaller learning rate
-from matplotlib import pyplot as plt
-from Mean_Squared_Error import gradient_descent, Y, X, epochs
+import numpy as np
+from Mean_Squared_Error import mean_squared_error
 
-learning_rate = 0.00001
+def gradient_descent(X, Y, learning_rate, epochs):
+    m, c = np.random.rand(), np.random.rand()
+    n = len(X)
 
-# Re-train the model using the smaller learning rate
-m, c = gradient_descent(X, Y, learning_rate, epochs)
+    for epoch in range(epochs):
+        Y_pred = m * X + c
+        mse = mean_squared_error(Y, Y_pred)
 
-# Plot the line of best fit
-plt.scatter(X, Y, color='blue', label='Data points')
-plt.plot(X, m * X + c, color='red', label='Best fit line')
-plt.xlabel('Office Size (sq. ft.)')
-plt.ylabel('Office Price')
-plt.title('Office Size vs. Price')
-plt.legend()
-plt.show()
+        dm = (-2 / n) * sum(X * (Y - Y_pred))
+        dc = (-2 / n) * sum(Y - Y_pred)
 
-# Predict the office price for 100 sq. ft.
-predicted_price_100 = m * 100 + c
-predicted_price_100
+        m -= learning_rate * dm
+        c -= learning_rate * dc
+
+        print(f"Epoch {epoch + 1}, MSE: {mse:.4f}")
+
+    return m, c
